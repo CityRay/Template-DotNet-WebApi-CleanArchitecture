@@ -30,7 +30,7 @@ namespace CleanArchitecture.Application.Queries.FollowStock
                         .Where(f => f.UserId == request.UserId)
                         .Select(f => new GetFollowedStocksResponse
                         {
-                            ID = f.ID,
+                            ID = f.Id,
                             UserId = f.UserId,
                             StockId = f.StockId,
                             Stock = new GetStocksResponse

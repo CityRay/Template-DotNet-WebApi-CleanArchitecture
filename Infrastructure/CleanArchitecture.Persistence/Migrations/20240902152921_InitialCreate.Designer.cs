@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CleanArchitecture.Persistence.Migrations
 {
     [DbContext(typeof(PostgresqlDataContext))]
-    [Migration("20240902072333_InitialCreate")]
+    [Migration("20240902152921_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -112,7 +112,7 @@ namespace CleanArchitecture.Persistence.Migrations
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.Follower", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -135,9 +135,10 @@ namespace CleanArchitecture.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("StockId");
 
@@ -195,7 +196,7 @@ namespace CleanArchitecture.Persistence.Migrations
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.StockTransaction", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -233,9 +234,10 @@ namespace CleanArchitecture.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("StockId");
 
@@ -387,7 +389,8 @@ namespace CleanArchitecture.Persistence.Migrations
                     b.HasOne("CleanArchitecture.Domain.Entities.AppUser", "User")
                         .WithMany("Followers")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Stock");
 
@@ -405,7 +408,8 @@ namespace CleanArchitecture.Persistence.Migrations
                     b.HasOne("CleanArchitecture.Domain.Entities.AppUser", "User")
                         .WithMany("Transactions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Stock");
 

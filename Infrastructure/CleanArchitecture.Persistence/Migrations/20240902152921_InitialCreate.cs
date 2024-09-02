@@ -187,18 +187,18 @@ namespace CleanArchitecture.Persistence.Migrations
                 name: "Followers",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Remark = table.Column<string>(type: "text", nullable: true),
                     CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     DeletedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    UserId = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false),
                     StockId = table.Column<Guid>(type: "uuid", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Followers", x => x.ID);
+                    table.PrimaryKey("PK_Followers", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Followers_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -217,7 +217,7 @@ namespace CleanArchitecture.Persistence.Migrations
                 name: "StockTransactions",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     IsPurchase = table.Column<bool>(type: "boolean", nullable: false),
                     Quantity = table.Column<decimal>(type: "numeric", nullable: false),
                     PurchasePrice = table.Column<decimal>(type: "numeric", nullable: false),
@@ -227,13 +227,13 @@ namespace CleanArchitecture.Persistence.Migrations
                     CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     DeletedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    UserId = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false),
                     StockId = table.Column<Guid>(type: "uuid", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StockTransactions", x => x.ID);
+                    table.PrimaryKey("PK_StockTransactions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_StockTransactions_AspNetUsers_UserId",
                         column: x => x.UserId,

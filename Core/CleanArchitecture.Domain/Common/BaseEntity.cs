@@ -8,11 +8,20 @@ namespace CleanArchitecture.Domain.Common
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid ID { get; set; }
+        public Guid Id { get; set; }
+
+        [Required]
         public string UserId { get; set; }
+
+        [ForeignKey("UserId")]
         public AppUser User { get; set; }
+
+        [Required]
         public Guid StockId { get; set; }
+
+        [ForeignKey("StockId")]
         public Stock Stock { get; set; }
+
         public bool IsDeleted { get; set; } = false;
     }
 }
