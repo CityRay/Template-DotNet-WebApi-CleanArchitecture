@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace CleanArchitecture.WebAPI.Extensions
 {
@@ -9,6 +10,10 @@ namespace CleanArchitecture.WebAPI.Extensions
     {
         public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration config)
         {
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(config)
+                .CreateLogger();
+
             services.AddCorsPolicy();
 
             services.AddControllers(opt =>
@@ -19,7 +24,8 @@ namespace CleanArchitecture.WebAPI.Extensions
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(c => {
+            services.AddSwaggerGen(c =>
+            {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CleanArchitecture Web API", Version = "v1" });
 
                 c.EnableAnnotations();
