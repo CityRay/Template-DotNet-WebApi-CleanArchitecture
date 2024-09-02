@@ -1,4 +1,7 @@
-﻿using CleanArchitecture.Application.Queries.Stocks;
+﻿using CleanArchitecture.Application.Commands.Stocks;
+using CleanArchitecture.Application.Queries.Stocks;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
@@ -10,10 +13,6 @@ namespace CleanArchitecture.WebAPI.Extensions
     {
         public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration config)
         {
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(config)
-                .CreateLogger();
-
             services.AddCorsPolicy();
 
             services.AddControllers(opt =>
@@ -22,6 +21,7 @@ namespace CleanArchitecture.WebAPI.Extensions
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 opt.Filters.Add(new AuthorizeFilter(policy));
             });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
@@ -57,6 +57,9 @@ namespace CleanArchitecture.WebAPI.Extensions
             });
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetStocks.Handler).Assembly));
+
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssemblyContaining<AddStockValidator>();
 
             return services;
         }

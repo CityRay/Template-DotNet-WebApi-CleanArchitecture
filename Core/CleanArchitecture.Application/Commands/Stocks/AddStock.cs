@@ -1,6 +1,7 @@
 ﻿using CleanArchitecture.Application.Common;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Persistence.Context;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -11,6 +12,14 @@ namespace CleanArchitecture.Application.Commands.Stocks
         public class Command : IRequest<Result<Unit>>
         {
             public AddStockRequest Stock { get; set; }
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Stock).SetValidator(new AddStockValidator());
+            }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
