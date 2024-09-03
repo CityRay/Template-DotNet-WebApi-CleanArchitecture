@@ -24,7 +24,7 @@ namespace CleanArchitecture.Application.Queries.Stocks
                             Symbol = s.Symbol,
                             Name = s.Name,
                             Price = s.Price,
-                            Industry = s.Industry,
+                            Industry = s.Industry ?? string.Empty,
                             LastDividendYield = s.LastDividendYield,
                             DisposalStock = s.DisposalStock,
                             AlertStock = s.AlertStock,

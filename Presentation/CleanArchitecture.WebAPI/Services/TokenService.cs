@@ -17,14 +17,18 @@ namespace CleanArchitecture.WebAPI.Services
 
         public string CreateToken(AppUser user)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString())
-            };
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (string.IsNullOrEmpty(user.Id)) throw new ArgumentNullException(nameof(user.Id));
+            if (string.IsNullOrEmpty(user.UserName)) throw new ArgumentNullException(nameof(user.UserName));
 
-            var tokenKey = _config["TokenKey"];
+            var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id ?? string.Empty),
+                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString())
+                };
+
+            var tokenKey = _config["TokenKey"] ?? throw new ArgumentNullException("TokenKey is required");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

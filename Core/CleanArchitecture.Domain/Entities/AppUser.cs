@@ -5,13 +5,13 @@ namespace CleanArchitecture.Domain.Entities
 {
     public class AppUser : IdentityUser
     {
-        public string DisplayName { get; set; }
+        public required string DisplayName { get; set; }
 
         // 頭像
-        public string Avatar { get; set; }
+        public string? Avatar { get; set; }
 
         // 生日
-        public string Birthday { get; set; }
+        public DateTimeOffset? Birthday { get; set; }
 
         // 身份
         public UserType UserType { get; set; }

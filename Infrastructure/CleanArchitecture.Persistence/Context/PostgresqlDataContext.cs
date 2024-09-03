@@ -12,6 +12,7 @@ namespace CleanArchitecture.Persistence.Context
 
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<StockTransaction> StockTransactions { get; set; }
+        public DbSet<StockRobotTransaction> StockRobotTransactions { get; set; }
         public DbSet<Follower> Followers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,9 +27,16 @@ namespace CleanArchitecture.Persistence.Context
             modelBuilder.Entity<Stock>()
                 .HasIndex(s => s.Symbol)
                 .IsUnique();
+
             modelBuilder.Entity<AppUser>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+
+            modelBuilder.Entity<StockRobotTransaction>()
+                .HasIndex(u => u.StrategyType);
+
+            modelBuilder.Entity<StockRobotTransaction>()
+                .HasIndex(u => u.Symbol);
 
             // 設定外鍵和關聯性
             modelBuilder.Entity<Follower>()
@@ -58,13 +66,19 @@ namespace CleanArchitecture.Persistence.Context
                 .HasOne(t => t.User)
                 .WithMany(u => u.Transactions)
                 .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<StockTransaction>()
                 .HasOne(t => t.Stock)
                 .WithMany(s => s.Transactions)
                 .HasForeignKey(t => t.StockId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<StockRobotTransaction>()
+                .HasOne(t => t.Stock)
+                .WithMany()
+                .HasForeignKey(t => t.StockId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

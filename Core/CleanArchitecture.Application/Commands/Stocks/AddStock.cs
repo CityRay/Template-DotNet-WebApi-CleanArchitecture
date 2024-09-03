@@ -11,7 +11,7 @@ namespace CleanArchitecture.Application.Commands.Stocks
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public AddStockRequest Stock { get; set; }
+            public required AddStockRequest Stock { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -47,7 +47,7 @@ namespace CleanArchitecture.Application.Commands.Stocks
                         Symbol = request.Stock.Symbol,
                         Name = request.Stock.Name.Trim(),
                         Price = request.Stock.Price,
-                        Industry = request.Stock.Industry.Trim(),
+                        Industry = request.Stock.Industry?.Trim(),
                         LastDividendYield = request.Stock.LastDividendYield,
                         DisposalStock = request.Stock.DisposalStock,
                         AlertStock = request.Stock.AlertStock

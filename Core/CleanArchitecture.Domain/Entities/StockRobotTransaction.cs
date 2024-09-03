@@ -15,7 +15,7 @@ namespace CleanArchitecture.Domain.Entities
         /// 代碼
         /// </summary>
         [MaxLength(8)]
-        public string Symbol { get; set; }
+        public required string Symbol { get; set; }
 
         /// <summary>
         /// StockId
@@ -26,7 +26,7 @@ namespace CleanArchitecture.Domain.Entities
         /// Stock
         /// </summary>
         [ForeignKey("StockId")]
-        public Stock Stock { get; set; }
+        public Stock? Stock { get; set; }
 
         /// <summary>
         /// 觸發價格
@@ -53,7 +53,7 @@ namespace CleanArchitecture.Domain.Entities
         /// <summary>
         /// 策略類型
         /// </summary>
-        public StrategyType StrategyName { get; set; }
+        public StrategyType StrategyType { get; set; }
 
         /// <summary>
         /// 風險程度

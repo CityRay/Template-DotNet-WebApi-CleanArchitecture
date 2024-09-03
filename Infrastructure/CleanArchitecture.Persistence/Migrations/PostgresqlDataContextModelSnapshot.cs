@@ -33,14 +33,15 @@ namespace CleanArchitecture.Persistence.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
 
-                    b.Property<string>("Birthday")
-                        .HasColumnType("text");
+                    b.Property<DateTimeOffset?>("Birthday")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
                     b.Property<string>("DisplayName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -123,6 +124,7 @@ namespace CleanArchitecture.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Remark")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("StockId")
@@ -172,12 +174,14 @@ namespace CleanArchitecture.Persistence.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Symbol")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTimeOffset?>("UpdatedTime")
@@ -189,6 +193,58 @@ namespace CleanArchitecture.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Stocks");
+                });
+
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.StockRobotTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("ExitDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("HoldDays")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RiskLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("StockId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("StrategyType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
+                    b.Property<DateTimeOffset>("TriggerDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("TriggerPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTimeOffset?>("UpdatedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StockId");
+
+                    b.HasIndex("StrategyType");
+
+                    b.HasIndex("Symbol");
+
+                    b.ToTable("StockRobotTransactions");
                 });
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.StockTransaction", b =>
@@ -394,18 +450,29 @@ namespace CleanArchitecture.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.StockRobotTransaction", b =>
+                {
+                    b.HasOne("CleanArchitecture.Domain.Entities.Stock", "Stock")
+                        .WithMany()
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Stock");
+                });
+
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.StockTransaction", b =>
                 {
                     b.HasOne("CleanArchitecture.Domain.Entities.Stock", "Stock")
                         .WithMany("Transactions")
                         .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("CleanArchitecture.Domain.Entities.AppUser", "User")
                         .WithMany("Transactions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Stock");

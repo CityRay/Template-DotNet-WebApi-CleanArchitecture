@@ -10,7 +10,7 @@ namespace CleanArchitecture.Application.Commands.Stocks
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public UpdateStockRequest Stock { get; set; }
+            public required UpdateStockRequest Stock { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>

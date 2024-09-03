@@ -20,7 +20,8 @@ namespace CleanArchitecture.WebAPI.Extensions
 
             //services.AddAuthentication();
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+            var tokenKey = config["TokenKey"] ?? throw new ArgumentNullException("TokenKey is required");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {

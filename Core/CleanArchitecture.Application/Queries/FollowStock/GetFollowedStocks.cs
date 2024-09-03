@@ -11,7 +11,7 @@ namespace CleanArchitecture.Application.Queries.FollowStock
     {
         public class Query : IRequest<Result<List<GetFollowedStocksResponse>>>
         {
-            public string UserId { get; set; }
+            public required string UserId { get; set; }
         }
 
         public class Handler(PostgresqlDataContext context, ILogger<Handler> logger) : IRequestHandler<Query, Result<List<GetFollowedStocksResponse>>>
@@ -27,7 +27,7 @@ namespace CleanArchitecture.Application.Queries.FollowStock
                 {
                     var result = await context.Followers
                         .AsNoTracking()
-                        .Where(f => f.UserId == request.UserId)
+                        .Where(f => f.UserId == request.UserId && f.Stock != null)
                         .Select(f => new GetFollowedStocksResponse
                         {
                             ID = f.Id,
@@ -35,11 +35,11 @@ namespace CleanArchitecture.Application.Queries.FollowStock
                             StockId = f.StockId,
                             Stock = new GetStocksResponse
                             {
-                                Id = f.Stock.Id,
+                                Id = f.Stock!.Id,
                                 Symbol = f.Stock.Symbol,
                                 Name = f.Stock.Name,
                                 Price = f.Stock.Price,
-                                Industry = f.Stock.Industry,
+                                Industry = f.Stock.Industry ?? string.Empty,
                                 LastDividendYield = f.Stock.LastDividendYield,
                                 DisposalStock = f.Stock.DisposalStock,
                                 AlertStock = f.Stock.AlertStock,

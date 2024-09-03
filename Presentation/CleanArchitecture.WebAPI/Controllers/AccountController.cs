@@ -108,7 +108,14 @@ namespace CleanArchitecture.WebAPI.Controllers
                 return Unauthorized();
             }
 
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(id));
+            var userId = User.FindFirstValue(id) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null) return Unauthorized();
 
@@ -117,6 +124,11 @@ namespace CleanArchitecture.WebAPI.Controllers
 
         private LoginResponse CreateUserObject(AppUser user)
         {
+            if (user == null || string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.UserName))
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
             return new LoginResponse
             {
                 DisplayName = user.DisplayName,

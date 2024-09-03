@@ -31,9 +31,9 @@ namespace CleanArchitecture.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    DisplayName = table.Column<string>(type: "text", nullable: true),
+                    DisplayName = table.Column<string>(type: "text", nullable: false),
                     Avatar = table.Column<string>(type: "text", nullable: true),
-                    Birthday = table.Column<string>(type: "text", nullable: true),
+                    Birthday = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     UserType = table.Column<int>(type: "integer", nullable: false),
                     IsApproved = table.Column<bool>(type: "boolean", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -61,8 +61,8 @@ namespace CleanArchitecture.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Symbol = table.Column<string>(type: "text", nullable: true),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Symbol = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     Industry = table.Column<string>(type: "text", nullable: true),
                     LastDividendYield = table.Column<decimal>(type: "numeric", nullable: false),
@@ -188,7 +188,7 @@ namespace CleanArchitecture.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Remark = table.Column<string>(type: "text", nullable: true),
+                    Remark = table.Column<string>(type: "text", nullable: false),
                     CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     DeletedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -211,6 +211,34 @@ namespace CleanArchitecture.Persistence.Migrations
                         principalTable: "Stocks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StockRobotTransactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Symbol = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
+                    StockId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TriggerPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    TriggerDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    HoldDays = table.Column<int>(type: "integer", nullable: false),
+                    ExitDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    StrategyType = table.Column<int>(type: "integer", nullable: false),
+                    RiskLevel = table.Column<int>(type: "integer", nullable: false),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StockRobotTransactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StockRobotTransactions_Stocks_StockId",
+                        column: x => x.StockId,
+                        principalTable: "Stocks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -239,13 +267,13 @@ namespace CleanArchitecture.Persistence.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_StockTransactions_Stocks_StockId",
                         column: x => x.StockId,
                         principalTable: "Stocks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -314,6 +342,21 @@ namespace CleanArchitecture.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_StockRobotTransactions_StockId",
+                table: "StockRobotTransactions",
+                column: "StockId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StockRobotTransactions_StrategyType",
+                table: "StockRobotTransactions",
+                column: "StrategyType");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StockRobotTransactions_Symbol",
+                table: "StockRobotTransactions",
+                column: "Symbol");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Stocks_Symbol",
                 table: "Stocks",
                 column: "Symbol",
@@ -350,6 +393,9 @@ namespace CleanArchitecture.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Followers");
+
+            migrationBuilder.DropTable(
+                name: "StockRobotTransactions");
 
             migrationBuilder.DropTable(
                 name: "StockTransactions");

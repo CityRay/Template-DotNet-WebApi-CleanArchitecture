@@ -10,7 +10,8 @@ namespace CleanArchitecture.Application.Commands.FollowStock
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public AddFollowerRequest Follower { get; set; }
+            public required string Id { get; set; }
+            public required AddFollowerRequest Follower { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -35,9 +36,9 @@ namespace CleanArchitecture.Application.Commands.FollowStock
 
                     var follower = new Follower
                     {
-                        UserId = request.Follower.UserId,
+                        UserId = request.Id,
                         StockId = request.Follower.StockId,
-                        Remark = request.Follower.Remark
+                        Remark = request.Follower.Remark ?? string.Empty
                     };
 
                     await _context.Followers.AddAsync(follower);
@@ -47,7 +48,7 @@ namespace CleanArchitecture.Application.Commands.FollowStock
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Error adding follower : {request.Follower.UserId}");
+                    _logger.LogError(ex, $"Error adding follower : {request.Id}");
                     return Result<Unit>.Failure(ex.Message);
                 }
             }

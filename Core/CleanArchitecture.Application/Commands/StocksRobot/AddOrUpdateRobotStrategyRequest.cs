@@ -1,13 +1,13 @@
 ﻿using CleanArchitecture.Domain.Enums;
 
-namespace CleanArchitecture.ModelContract.WebAPI.Request
+namespace CleanArchitecture.Application.Commands.StocksRobot
 {
-    public class StockRobotRequest
+    public class AddOrUpdateRobotStrategyRequest
     {
         /// <summary>
         /// 代碼
         /// </summary>
-        public string Symbol { get; set; }
+        public required string Symbol { get; set; }
 
         /// <summary>
         /// 觸發價格
@@ -32,11 +32,31 @@ namespace CleanArchitecture.ModelContract.WebAPI.Request
         /// <summary>
         /// 策略類型
         /// </summary>
-        public StrategyType StrategyName { get; set; }
+        public StrategyType StrategyType { get; set; }
 
         /// <summary>
         /// 風險程度
         /// </summary>
         public RiskLevelType RiskLevel { get; set; }
+
+        /// <summary>
+        /// 將日期轉換為 UTC 時間
+        /// </summary>
+        public void ConvertDatesToUtc()
+        {
+            try
+            {
+                TriggerDate = TriggerDate.ToUniversalTime();
+
+                if (ExitDate.HasValue)
+                {
+                    ExitDate = ExitDate.Value.ToUniversalTime();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"日期轉換失敗: {ex.Message}", ex);
+            }
+        }
     }
 }

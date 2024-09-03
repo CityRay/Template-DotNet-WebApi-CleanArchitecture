@@ -11,16 +11,16 @@ namespace CleanArchitecture.Domain.Common
         public Guid Id { get; set; }
 
         [Required]
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public AppUser User { get; set; }
+        public AppUser? User { get; set; }
 
         [Required]
         public Guid StockId { get; set; }
 
         [ForeignKey("StockId")]
-        public Stock Stock { get; set; }
+        public Stock? Stock { get; set; }
 
         public bool IsDeleted { get; set; } = false;
     }
